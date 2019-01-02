@@ -1,6 +1,8 @@
 package com.example.elena.mynotes.ui;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +39,14 @@ public class CategoryPresentation {
     }
 
     public void bind(CategoryEntity categoryEntity) {
-        mImageView.setImageResource(categoryEntity.imageResource);
+        String imageName = categoryEntity.imageName;
+        Resources resources = mViewGroup.getContext().getResources();
+        int id = resources.getIdentifier(imageName, "drawable",
+                mViewGroup.getContext().getPackageName());
+
+        mImageView.setImageResource(id);
         mTextView.setText(categoryEntity.name);
+
         mCategory = categoryEntity;
     }
 

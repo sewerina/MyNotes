@@ -15,6 +15,6 @@ public class CategoryEntity {
     public String name;
 
     @ColumnInfo(name = "category_image")
-    public int imageResource;
+    public String imageName;
 
 }

@@ -31,7 +31,7 @@ public class CategoriesActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.fab)
+    @BindView(R.id.fab_add_category)
     FloatingActionButton mFab;
 
     private MyNotesDao mMyNotesDao;
@@ -46,12 +46,12 @@ public class CategoriesActivity extends AppCompatActivity {
 
         mMyNotesDao = MyNotesApp.getDatabase().myNotesDao();
 
-        for (int i = 1; i <= 10; i++) {
-            CategoryEntity entity = new CategoryEntity();
-            entity.id = i;
-            entity.name = String.valueOf(i);
-            mMyNotesDao.createCategory(entity);
-        }
+//        for (int i = 1; i <= 10; i++) {
+//            CategoryEntity entity = new CategoryEntity();
+//            entity.id = i;
+//            entity.name = String.valueOf(i);
+//            mMyNotesDao.createCategory(entity);
+//        }
 
         List<CategoryEntity> categories = mMyNotesDao.getAllCategories();
         mAdapter = new CategoryAdapter(categories);
@@ -64,10 +64,16 @@ public class CategoriesActivity extends AppCompatActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Add new category", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+
+                CreateCategoryDialogFragment.showDialog(getSupportFragmentManager());
             }
         });
+    }
+
+    public void refresh(){
+        mAdapter.update(mMyNotesDao.getAllCategories());
     }
 
     @Override
@@ -134,6 +140,12 @@ public class CategoriesActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return mCategories.size();
+        }
+
+        public void update(List<CategoryEntity> categories) {
+            mCategories.clear();
+            mCategories.addAll(categories);
+            notifyDataSetChanged();
         }
     }
 
