@@ -130,6 +130,23 @@ public class ExampleInstrumentedTest {
         assertEquals(2, mMyNotesDao.getNotesByCategoryId(44).size());
     }
 
+    @Test
+    public void testGetNotesByCategoryId() {
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.id = 33;
+        categoryEntity.name = "holidays";
+
+        for(int k = 1; k <= 5; k++) {
+            NoteEntity noteEntity = new NoteEntity();
+            noteEntity.categoryId = categoryEntity.id;
+            noteEntity.id = 11 * k;
+            noteEntity.description = "Something";
+            mMyNotesDao.createNote(noteEntity);
+        }
+
+        assertEquals(5, mMyNotesDao.getNotesByCategoryId(categoryEntity.id).size());
+    }
+
 
 
 }
