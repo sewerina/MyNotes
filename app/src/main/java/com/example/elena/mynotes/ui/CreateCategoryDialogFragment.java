@@ -11,24 +11,21 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-
 import com.example.elena.mynotes.MyNotesApp;
 import com.example.elena.mynotes.R;
 import com.example.elena.mynotes.database.MyNotesDao;
 import com.example.elena.mynotes.database.entities.CategoryEntity;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CreateCategoryDialogFragment extends DialogFragment {
-    private static final String TAG = "CreateCategoryDialog";
+    private static final String TAG = "CategoryDialog";
 
     @BindView(R.id.et_categoryName)
     EditText mEditText;
@@ -72,7 +69,7 @@ public class CreateCategoryDialogFragment extends DialogFragment {
             }
         });
 
-        dialogBuilder.setTitle("Create new Category")
+        dialogBuilder.setTitle("Create new category")
                 .setView(view)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override

@@ -36,7 +36,7 @@ public interface MyNotesDao {
 
     // For NoteEntity
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void createNote(NoteEntity noteEntity);
 
     @Update

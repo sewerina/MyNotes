@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.elena.mynotes.R;
 import com.example.elena.mynotes.database.entities.NoteEntity;
+
+import java.text.DateFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -38,9 +41,14 @@ public class NotePresentation {
 
     public void bind(NoteEntity noteEntity) {
         mNoteEntity = noteEntity;
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 
-//        mCreationDateTv.setText(mNoteEntity.creationDate.getDate());
-//        mEditedDateTv.setText(mNoteEntity.modifiedDate.getDate());
+        String creationDate = dateFormat.format(mNoteEntity.creationDate);
+        mCreationDateTv.setText(creationDate);
+
+        String editedDate = dateFormat.format(mNoteEntity.modifiedDate);
+        mEditedDateTv.setText(editedDate);
+
         mDescriptionTv.setText(mNoteEntity.description);
     }
 }
