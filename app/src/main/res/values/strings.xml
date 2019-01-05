@@ -4,4 +4,7 @@
     <string name="et_hint_categoryName">Enter the name of the category</string>
     <string name="btn_categoryIcon">Select the icon for the category</string>
     <string name="et_hint_note">Your note</string>
+    <string name="edit">Edit</string>
+    <string name="sort">Sort</string>
+    <string name="delete">Delete</string>
 </resources>

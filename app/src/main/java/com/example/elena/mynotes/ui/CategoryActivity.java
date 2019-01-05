@@ -1,6 +1,7 @@
 package com.example.elena.mynotes.ui;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,11 +10,14 @@ import butterknife.ButterKnife;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.elena.mynotes.MyNotesApp;
 import com.example.elena.mynotes.R;
 import com.example.elena.mynotes.database.MyNotesDao;
+import com.example.elena.mynotes.database.entities.CategoryEntity;
 import com.example.elena.mynotes.database.entities.NoteEntity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
@@ -31,6 +35,7 @@ public class CategoryActivity extends AppCompatActivity {
     private NoteAdapter mAdapter;
     private MyNotesDao mMyNotesDao;
     private int mCategoryId;
+    private ActionBar mActionBar;
 
     public static Intent newIntent(Context context, String name, int id) {
         Intent intent = new Intent(context, CategoryActivity.class);
@@ -46,12 +51,23 @@ public class CategoryActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        mActionBar = getSupportActionBar();
+        mActionBar.setDisplayShowHomeEnabled(true);
+
         String name = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
         setTitle(name);
 
         mCategoryId = getIntent().getIntExtra(EXTRA_CATEGORY_ID, -1);
 
         mMyNotesDao = MyNotesApp.getDatabase().myNotesDao();
+
+        List<CategoryEntity> list = mMyNotesDao.categoryById(mCategoryId);
+        if (!list.isEmpty()) {
+            CategoryEntity categoryEntity = list.get(0);
+            String imageName = categoryEntity.imageName;
+            int id = getResources().getIdentifier(imageName, "drawable", getPackageName());
+            mActionBar.setIcon(id);
+        }
 
 //        for(int k = 1; k <= 5; k++) {
 //            NoteEntity noteEntity = new NoteEntity();
@@ -75,8 +91,45 @@ public class CategoryActivity extends AppCompatActivity {
         });
     }
 
-    public void refresh() {
+    public void refreshAdapter() {
         mAdapter.update(mMyNotesDao.getNotesByCategoryId(mCategoryId));
+    }
+
+    public void refreshToolbar() {
+        CategoryEntity categoryEntity = mMyNotesDao.categoryById(mCategoryId).get(0);
+        setTitle(categoryEntity.name);
+        String imageName = categoryEntity.imageName;
+        int id = getResources().getIdentifier(imageName, "drawable", getPackageName());
+        mActionBar.setIcon(id);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_category, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit_category:
+                UpdateCategoryDialogFragment.showDialog(getSupportFragmentManager(), mCategoryId);
+                return true;
+
+            case R.id.sort_notes:
+
+                return true;
+
+            case R.id.delete_category:
+                mMyNotesDao.deleteNotesByCategoryId(mCategoryId);
+                refreshAdapter();
+                mMyNotesDao.deleteCategory(mCategoryId);
+                this.finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private class NoteHolder extends RecyclerView.ViewHolder {

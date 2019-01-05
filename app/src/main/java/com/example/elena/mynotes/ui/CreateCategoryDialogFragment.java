@@ -3,7 +3,6 @@ package com.example.elena.mynotes.ui;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CreateCategoryDialogFragment extends DialogFragment {
-    private static final String TAG = "CategoryDialog";
+    private static final String TAG = "CreateCategoryDialog";
 
     @BindView(R.id.et_categoryName)
     EditText mEditText;
@@ -54,7 +53,7 @@ public class CreateCategoryDialogFragment extends DialogFragment {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater = activity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_create_category, null);
+        View view = inflater.inflate(R.layout.dialog_fragment_category, null);
         ButterKnife.bind(this, view);
 
         mButton.setOnClickListener(new View.OnClickListener() {

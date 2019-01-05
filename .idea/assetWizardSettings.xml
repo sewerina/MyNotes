@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/usr/local/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_playlist_add_check_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/usr/local/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_sort_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -33,9 +33,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_positive_btn" />
+                                      <entry key="outputName" value="ic_sort" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="19bb22" />
+                                      <entry key="themeColor" value="2640bb" />
                                     </map>
                                   </option>
                                 </PersistentState>

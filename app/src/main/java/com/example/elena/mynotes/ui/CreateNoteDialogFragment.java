@@ -77,7 +77,7 @@ public class CreateNoteDialogFragment extends DialogFragment {
                             dao.createNote(noteEntity);
 
                             if (activity instanceof CategoryActivity) {
-                                ((CategoryActivity)activity).refresh();
+                                ((CategoryActivity)activity).refreshAdapter();
                             }
 
                         } else {

@@ -48,6 +48,9 @@ public interface MyNotesDao {
     @Query("DELETE from note_entity WHERE note_id = :noteId")
     void deleteNote(int noteId);
 
+    @Query("DELETE from note_entity WHERE category_id = :categoryId")
+    void deleteNotesByCategoryId(int categoryId);
+
     @Query("SELECT * from note_entity")
     List<NoteEntity> getAllNotes();
 
