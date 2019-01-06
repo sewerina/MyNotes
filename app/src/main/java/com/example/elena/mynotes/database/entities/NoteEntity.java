@@ -1,7 +1,6 @@
 package com.example.elena.mynotes.database.entities;
 
 import com.example.elena.mynotes.database.DateConverter;
-
 import java.util.Date;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

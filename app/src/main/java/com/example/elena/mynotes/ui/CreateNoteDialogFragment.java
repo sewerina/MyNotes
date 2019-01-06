@@ -50,7 +50,7 @@ public class CreateNoteDialogFragment extends DialogFragment {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater = activity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_create_note, null);
+        View view = inflater.inflate(R.layout.dialog_fragment_note, null);
         ButterKnife.bind(this, view);
 
         if (getArguments() != null) {

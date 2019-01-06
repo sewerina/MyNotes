@@ -12,8 +12,8 @@
 
     <item
         android:id="@+id/sort_notes"
-        android:icon="@drawable/ic_sort"
-        android:title="@string/sort"
+        android:icon="@drawable/ic_unsorted"
+        android:title="@string/unsorted"
         app:showAsAction="ifRoom|withText" />
 
     <item

@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.elena.mynotes.R;
 import com.example.elena.mynotes.database.entities.NoteEntity;
-
 import java.text.DateFormat;
 
+import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -50,5 +50,9 @@ public class NotePresentation {
         mEditedDateTv.setText(editedDate);
 
         mDescriptionTv.setText(mNoteEntity.description);
+    }
+
+    public void showDialogForUpdateNote(FragmentManager fragmentManager) {
+        UpdateDeleteNoteDialogFragment.showDialog(fragmentManager, mNoteEntity.id);
     }
 }

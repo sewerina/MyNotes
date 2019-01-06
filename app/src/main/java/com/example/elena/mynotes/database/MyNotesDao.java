@@ -58,6 +58,9 @@ public interface MyNotesDao {
     @Query("SELECT * from note_entity WHERE category_id = :categoryId")
     List<NoteEntity> getNotesByCategoryId(int categoryId);
 
+    @Query("SELECT * from note_entity WHERE category_id = :categoryId ORDER by modified_date")
+    List<NoteEntity> getSortedNotesByCategoryId(int categoryId);
+
     @Query("SELECT * from note_entity WHERE note_id = :noteId")
     List<NoteEntity> noteById(int noteId);
 

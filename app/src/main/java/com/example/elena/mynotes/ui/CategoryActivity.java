@@ -37,6 +37,8 @@ public class CategoryActivity extends AppCompatActivity {
     private int mCategoryId;
     private ActionBar mActionBar;
 
+    private boolean mIsSort = false;
+
     public static Intent newIntent(Context context, String name, int id) {
         Intent intent = new Intent(context, CategoryActivity.class);
         intent.putExtra(EXTRA_CATEGORY_NAME, name);
@@ -92,7 +94,8 @@ public class CategoryActivity extends AppCompatActivity {
     }
 
     public void refreshAdapter() {
-        mAdapter.update(mMyNotesDao.getNotesByCategoryId(mCategoryId));
+        List<NoteEntity> notes = mIsSort ? mMyNotesDao.getSortedNotesByCategoryId(mCategoryId) : mMyNotesDao.getNotesByCategoryId(mCategoryId);
+        mAdapter.update(notes);
     }
 
     public void refreshToolbar() {
@@ -117,7 +120,15 @@ public class CategoryActivity extends AppCompatActivity {
                 return true;
 
             case R.id.sort_notes:
-
+                mIsSort = !mIsSort;
+                if (mIsSort) {
+                    item.setIcon(R.drawable.ic_sort);
+                    item.setTitle(R.string.sort);
+                } else {
+                    item.setIcon(R.drawable.ic_unsorted);
+                    item.setTitle(R.string.unsorted);
+                }
+                refreshAdapter();
                 return true;
 
             case R.id.delete_category:
@@ -132,16 +143,22 @@ public class CategoryActivity extends AppCompatActivity {
         }
     }
 
-    private class NoteHolder extends RecyclerView.ViewHolder {
+    private class NoteHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private NotePresentation mNotePresentation;
 
         public NoteHolder(@NonNull NotePresentation presentation) {
             super(presentation.view());
+            this.itemView.setOnClickListener(this);
             mNotePresentation = presentation;
         }
 
         public void bind(NoteEntity noteEntity) {
             mNotePresentation.bind(noteEntity);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mNotePresentation.showDialogForUpdateNote(getSupportFragmentManager());
         }
     }
 
