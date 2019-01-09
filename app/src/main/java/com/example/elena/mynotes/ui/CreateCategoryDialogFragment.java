@@ -68,7 +68,7 @@ public class CreateCategoryDialogFragment extends DialogFragment {
             }
         });
 
-        dialogBuilder.setTitle("Create new category")
+        dialogBuilder.setTitle(getString(R.string.dialog_title_createCategory))
                 .setView(view)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override

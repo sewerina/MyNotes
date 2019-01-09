@@ -1,6 +1,8 @@
 package com.example.elena.mynotes;
 
 import android.app.Application;
+import android.content.Context;
+
 import com.example.elena.mynotes.database.MyNotesDatabase;
 import androidx.room.Room;
 
@@ -20,5 +22,9 @@ public class MyNotesApp extends Application {
 
     public static MyNotesDatabase getDatabase() {
         return sDatabase;
+    }
+
+    public static void setDatabase(MyNotesDatabase db) {
+        sDatabase = db;
     }
 }

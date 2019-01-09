@@ -8,4 +8,5 @@
     <string name="sort">Sort</string>
     <string name="delete">Delete</string>
     <string name="unsorted">Unsorted</string>
+    <string name="dialog_title_createCategory">Create new category</string>
 </resources>
