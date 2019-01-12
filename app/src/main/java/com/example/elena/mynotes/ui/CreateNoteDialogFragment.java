@@ -57,10 +57,12 @@ public class CreateNoteDialogFragment extends DialogFragment {
             mCategoryId = getArguments().getInt(CATEGORY_ID);
         }
 
-        dialogBuilder.setTitle("Create new note")
+        dialogBuilder.setTitle(getString(R.string.dialog_title_createNote))
                 .setView(view)
                 .setPositiveButtonIcon(activity.getResources().getDrawable(R.drawable.ic_positive_btn))
-                .setPositiveButton("", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.btn_createNoteDialog), new DialogInterface.OnClickListener() {
+
+
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String noteDescription = mEditText.getText().toString();

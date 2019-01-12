@@ -45,6 +45,7 @@ public class CategoryPresentation {
                 mViewGroup.getContext().getPackageName());
 
         mImageView.setImageResource(id);
+        mImageView.setTag(imageName);
         mTextView.setText(categoryEntity.name);
 
         mCategory = categoryEntity;

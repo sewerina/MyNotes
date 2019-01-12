@@ -23,8 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class CategoryActivity extends AppCompatActivity {
-    private static final String EXTRA_CATEGORY_NAME = "com.example.elena.mynotes.ui.categoryName";
-    private static final String EXTRA_CATEGORY_ID = "com.example.elena.mynotes.ui.categoryId";
+    public static final String EXTRA_CATEGORY_NAME = "com.example.elena.mynotes.ui.categoryName";
+    public static final String EXTRA_CATEGORY_ID = "com.example.elena.mynotes.ui.categoryId";
 
     @BindView(R.id.recyclerView_notes)
     RecyclerView mRecyclerView;
@@ -69,6 +69,7 @@ public class CategoryActivity extends AppCompatActivity {
             String imageName = categoryEntity.imageName;
             int id = getResources().getIdentifier(imageName, "drawable", getPackageName());
             mActionBar.setIcon(id);
+
         }
 
 //        for(int k = 1; k <= 5; k++) {

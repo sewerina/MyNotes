@@ -87,9 +87,9 @@ public class UpdateCategoryDialogFragment extends DialogFragment {
             }
         });
 
-        builder.setTitle("Update your category")
+        builder.setTitle(getString(R.string.dialog_title_updateCategory))
                 .setView(view)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newCategoryName = mEditText.getText().toString();

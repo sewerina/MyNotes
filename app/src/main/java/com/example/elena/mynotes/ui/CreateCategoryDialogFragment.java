@@ -65,12 +65,14 @@ public class CreateCategoryDialogFragment extends DialogFragment {
                 } else {
                     mRadioGroup.setVisibility(View.GONE);
                 }
+
+//                mButton.setVisibility(View.GONE);
             }
         });
 
         dialogBuilder.setTitle(getString(R.string.dialog_title_createCategory))
                 .setView(view)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String name = mEditText.getText().toString();

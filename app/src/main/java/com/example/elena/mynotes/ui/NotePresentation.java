@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.example.elena.mynotes.R;
 import com.example.elena.mynotes.database.entities.NoteEntity;
 import java.text.DateFormat;
-
 import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
