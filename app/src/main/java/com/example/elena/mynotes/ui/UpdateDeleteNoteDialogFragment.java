@@ -62,9 +62,9 @@ public class UpdateDeleteNoteDialogFragment extends DialogFragment {
         String lastNoteDescription = noteEntity.description;
         mEditText.setText(lastNoteDescription);
 
-        dialogBuilder.setTitle("Delete or update your note")
+        dialogBuilder.setTitle(getString(R.string.dialog_title_updateDeleteNote))
                 .setView(view)
-                .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.btn_delete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDao.deleteNote(mNoteId);
@@ -74,7 +74,7 @@ public class UpdateDeleteNoteDialogFragment extends DialogFragment {
                         }
                     }
                 })
-                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.btn_update), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newNoteDescription = mEditText.getText().toString();

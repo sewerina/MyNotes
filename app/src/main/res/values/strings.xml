@@ -9,8 +9,12 @@
     <string name="delete">Delete</string>
     <string name="unsorted">Unsorted</string>
     <string name="dialog_title_createCategory">Create new category</string>
-    <string name="btn_createNoteDialog" />
     <string name="dialog_title_updateCategory">Update your category</string>
     <string name="dialog_title_createNote">Create new note</string>
+    <string name="dialog_title_updateDeleteNote">Delete or update your note</string>
+    <string name="btn_createNoteDialog" />
     <string name="btn_ok">OK</string>
+    <string name="btn_update">Update</string>
+    <string name="btn_delete">Delete</string>
+
 </resources>

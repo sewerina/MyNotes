@@ -1,35 +1,27 @@
 package com.example.elena.mynotes;
 
-import android.app.ActionBar;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.example.elena.mynotes.database.MyNotesDatabase;
 import com.example.elena.mynotes.database.entities.CategoryEntity;
 import com.example.elena.mynotes.ui.CategoryActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.List;
-
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.room.Room;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
@@ -37,15 +29,12 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withResourceName;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -159,8 +148,6 @@ public class EspressoTestForCategoryActivity {
         onView(withText("The cat bed")).check(doesNotExist());
         List<CategoryEntity> categories = MyNotesApp.getDatabase().myNotesDao().getAllCategories();
         assertTrue(categories.isEmpty());
-
-
     }
 
     @Test
@@ -182,8 +169,9 @@ public class EspressoTestForCategoryActivity {
         onView(withId(R.id.et_note))
                 .check(matches(instanceOf(EditText.class)))
                 .check(matches(withHint(R.string.et_hint_note)))
+                .check(matches(isEnabled()))
                 .check(matches(isDisplayed()));
-        onView(withId(R.id.et_note)).perform(typeText("Window"));
+        onView(withId(R.id.et_note)).perform(typeText("Windows"));
 
         // Dialog positive btn
         onView(withId(android.R.id.button1))
@@ -192,8 +180,8 @@ public class EspressoTestForCategoryActivity {
                 .check(matches(isDisplayed()));
         onView(withId(android.R.id.button1)).perform(click()).check(doesNotExist());
 
-        // Add item in the note list
-        onView(withText("Window")).check(matches(isDisplayed()));
+        // Verify that the note is added in list
+        onView(withText("Windows")).check(matches(isDisplayed()));
         onView(withId(R.id.tv_creationDate))
                 .check(matches(instanceOf(TextView.class)))
                 .check(matches(withText(not(isEmptyString()))))
@@ -205,12 +193,64 @@ public class EspressoTestForCategoryActivity {
                 .check(matches(withText(endsWith("2019 г."))))
                 .check(matches(isDisplayed()));
 
-        // Update note in list
+        // Add two notes yet
+        onView(withId(R.id.fab_add_note)).perform(click());
+        onView(withId(R.id.et_note)).perform(typeText("Floor"));
+        onView(withId(android.R.id.button1)).perform(click());
 
+        onView(withId(R.id.fab_add_note)).perform(click());
+        onView(withId(R.id.et_note)).perform(typeText("Crockery"));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        // Update note in list
+        onView(withText("Floor"))
+                .check(matches(instanceOf(TextView.class)))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withText(R.string.dialog_title_updateDeleteNote)).check(matches(isDisplayed()));
+        onView(withId(R.id.et_note))
+                .check(matches(instanceOf(EditText.class)))
+                .check(matches(withText("Floor")))
+                .check(matches(isEnabled()))
+                .check(matches(isDisplayed()))
+                .perform(replaceText("Table"));
+        onView(withText(R.string.btn_update))
+                .check(matches(instanceOf(Button.class)))
+                .check(matches(isEnabled()))
+                .check(matches(isDisplayed()));
+        onView(withText(R.string.btn_update))
+                .perform(click())
+                .check(doesNotExist());
+        onView(withText("Table")).check(matches(isDisplayed()));
+
+        // Check note count in list before delete
+        assertTrue(MyNotesApp.getDatabase().myNotesDao().getNotesByCategoryId(11).size() > 0);
+        assertEquals(3, MyNotesApp.getDatabase().myNotesDao().getNotesByCategoryId(11).size());
 
         // Delete note from list
+        onView(withText("Windows")).perform(click());
 
+        onView(withText(R.string.dialog_title_updateDeleteNote)).check(matches(isDisplayed()));
+        onView(withId(R.id.et_note))
+                .check(matches(instanceOf(EditText.class)))
+                .check(matches(withText("Windows")))
+                .check(matches(isEnabled()))
+                .check(matches(isDisplayed()));
+        onView(withText(R.string.btn_delete))
+                .check(matches(instanceOf(Button.class)))
+                .check(matches(isEnabled()))
+                .check(matches(isDisplayed()));
+        onView(withText(R.string.btn_delete))
+                .perform(click())
+                .check(doesNotExist());
+        onView(withText("Windows")).check(doesNotExist());
 
+        // Check note count in list after delete
+        assertTrue(MyNotesApp.getDatabase().myNotesDao().getNotesByCategoryId(11).size() > 0);
+        assertEquals(2, MyNotesApp.getDatabase().myNotesDao().getNotesByCategoryId(11).size());
+
+        // Open CreateNoteDialog (or update/delete dialog), click on back (click on outside the dialog)
 
     }
 
