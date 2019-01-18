@@ -7,21 +7,27 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
 import com.example.elena.mynotes.database.MyNotesDatabase;
 import com.example.elena.mynotes.database.entities.CategoryEntity;
 import com.example.elena.mynotes.ui.CategoryActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import java.util.List;
+
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.room.Room;
+import androidx.test.espresso.Espresso;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
@@ -29,8 +35,10 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
@@ -205,6 +213,7 @@ public class EspressoTestForCategoryActivity {
         // Update note in list
         onView(withText("Floor"))
                 .check(matches(instanceOf(TextView.class)))
+                .check(matches(isEnabled()))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -250,8 +259,17 @@ public class EspressoTestForCategoryActivity {
         assertTrue(MyNotesApp.getDatabase().myNotesDao().getNotesByCategoryId(11).size() > 0);
         assertEquals(2, MyNotesApp.getDatabase().myNotesDao().getNotesByCategoryId(11).size());
 
-        // Open CreateNoteDialog (or update/delete dialog), click on back (click on outside the dialog)
-
+        // Open CreateNoteDialog (or update/delete dialog), click on Back (click outside the dialog)
+        onView(withId(R.id.fab_add_note)).perform(click());
+        onView(withText(R.string.dialog_title_createNote)).check(matches(isDisplayed()));
+        onView(withId(R.id.fab_add_note)).check(doesNotExist());
+        onView(withText("Crockery")).check(doesNotExist());
+        Espresso.pressBack();
+        onView(withId(R.id.fab_add_note))
+                .check(matches(isEnabled()))
+                .check(matches(isClickable()))
+                .check(matches(isDisplayed()));
+        onView(withText("Crockery")).check(matches(isDisplayed()));
     }
 
 }

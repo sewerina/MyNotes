@@ -11,47 +11,45 @@
 
         <TextView
             android:id="@+id/tv_labelCreating"
+            style="@style/LabelStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Creation date: "
-            android:textStyle="bold" />
+            android:text="Creation date: " />
 
         <TextView
             android:id="@+id/tv_creationDate"
+            style="@style/DateTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
-            android:text="TextView"
-            android:textColor="@color/design_default_color_primary"
-            android:textStyle="italic" />
+            android:text="TextView" />
 
         <TextView
             android:id="@+id/tv_labelEdited"
+            style="@style/LabelStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Edited date: "
-            android:textStyle="bold" />
+            android:text="Edited date: " />
 
         <TextView
             android:id="@+id/tv_editedDate"
+            style="@style/DateTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
-            android:text="TextView"
-            android:textColor="@color/design_default_color_primary"
-            android:textStyle="italic" />
+            android:text="TextView" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/tv_description"
+        style="@style/NoteTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:text="TextView"
-        android:textColor="@color/design_default_color_primary_dark" />
+        android:text="TextView" />
 
     <View
         android:layout_width="match_parent"

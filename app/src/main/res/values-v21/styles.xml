@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="NoteAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="android:colorBackground">@color/background_material_light</item>
+        <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+    </style>
+</resources>
