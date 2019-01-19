@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import com.example.elena.mynotes.database.MyNotesDatabase;
-import com.example.elena.mynotes.ui.CategoriesActivity;
-import com.example.elena.mynotes.ui.CategoryActivity;
+import com.example.elena.mynotes.ui.categories.CategoriesActivity;
+import com.example.elena.mynotes.ui.notes.CategoryActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.junit.Before;
 import org.junit.Rule;
@@ -122,7 +122,6 @@ public class EspressoTestForCategoriesActivity {
         // Verification of intent
         onView(withText("Shop")).perform(click());
         intended(allOf(
-                hasExtra(CategoryActivity.EXTRA_CATEGORY_NAME, "Shop"),
                 hasExtraWithKey(CategoryActivity.EXTRA_CATEGORY_ID)));
     }
 

@@ -1,4 +1,4 @@
-package com.example.elena.mynotes.ui;
+package com.example.elena.mynotes.ui.notes;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,22 +9,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import com.example.elena.mynotes.MyNotesApp;
 import com.example.elena.mynotes.R;
-import com.example.elena.mynotes.database.MyNotesDao;
-import com.example.elena.mynotes.database.entities.CategoryEntity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UpdateCategoryDialogFragment extends DialogFragment {
     private static final String TAG = "UpdateCategoryDialog";
-    private static final String CATEGORY_ID = "com.example.elena.mynotes.ui.UpdateCategoryDialogFragment.categoryId";
 
     @BindView(R.id.et_categoryName)
     EditText mEditText;
@@ -37,39 +34,29 @@ public class UpdateCategoryDialogFragment extends DialogFragment {
 
     boolean mIsClick = false;
 
-    private int mCategoryId;
-    private MyNotesDao mDao;
+    private NotesViewModel mViewModel;
 
-    private static UpdateCategoryDialogFragment newInstance(int categoryId) {
-        UpdateCategoryDialogFragment dialogFragment = new UpdateCategoryDialogFragment();
-        Bundle args = new Bundle();
-        args.putInt(CATEGORY_ID, categoryId);
-        dialogFragment.setArguments(args);
-        return dialogFragment;
+    private static UpdateCategoryDialogFragment newInstance() {
+        return new UpdateCategoryDialogFragment();
     }
 
-    public static void showDialog(FragmentManager fragmentManager, int categoryId) {
-        newInstance(categoryId).show(fragmentManager, TAG);
+    public static void showDialog(FragmentManager fragmentManager) {
+        newInstance().show(fragmentManager, TAG);
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         FragmentActivity activity = getActivity();
+        mViewModel = ViewModelProviders.of(activity).get(NotesViewModel.class);
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_fragment_category, null);
         ButterKnife.bind(this, view);
 
-        if (getArguments() != null) {
-            mCategoryId = getArguments().getInt(CATEGORY_ID);
-        }
-
-        mDao = MyNotesApp.getDatabase().myNotesDao();
-        CategoryEntity categoryEntity = mDao.categoryById(mCategoryId).get(0);
-        String lastCategoryName = categoryEntity.name;
-        String lastCategoryIcon = categoryEntity.imageName;
+        String lastCategoryName = mViewModel.categoryName.getValue();
+        String lastCategoryIcon = mViewModel.imageName.getValue();
 
         mEditText.setText(lastCategoryName);
         RadioButton checkedRadioButton = mRadioGroup.findViewWithTag(lastCategoryIcon);
@@ -100,17 +87,7 @@ public class UpdateCategoryDialogFragment extends DialogFragment {
                             newCategoryIcon = choiceRadioButton.getTag().toString();
                         }
 
-                        if (!newCategoryName.isEmpty() && !newCategoryName.equals(lastCategoryName)) {
-                            categoryEntity.name = newCategoryName;
-                        }
-                        if (!newCategoryIcon.equals(lastCategoryIcon)) {
-                            categoryEntity.imageName = newCategoryIcon;
-                        }
-                        mDao.updateCategory(categoryEntity);
-
-                        if (activity instanceof CategoryActivity) {
-                            ((CategoryActivity) activity).refreshToolbar();
-                        }
+                        mViewModel.updateCategory(newCategoryName, newCategoryIcon);
                     }
                 });
 

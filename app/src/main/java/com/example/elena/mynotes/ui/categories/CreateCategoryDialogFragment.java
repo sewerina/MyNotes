@@ -1,4 +1,4 @@
-package com.example.elena.mynotes.ui;
+package com.example.elena.mynotes.ui.categories;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,16 +10,14 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-import com.example.elena.mynotes.MyNotesApp;
 import com.example.elena.mynotes.R;
-import com.example.elena.mynotes.database.MyNotesDao;
-import com.example.elena.mynotes.database.entities.CategoryEntity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -37,6 +35,8 @@ public class CreateCategoryDialogFragment extends DialogFragment {
 
     boolean mIsClick = false;
 
+    private CategoriesViewModel mViewModel;
+
     private static CreateCategoryDialogFragment newInstance() {
         CreateCategoryDialogFragment dialogFragment = new CreateCategoryDialogFragment();
         return dialogFragment;
@@ -50,6 +50,8 @@ public class CreateCategoryDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         FragmentActivity activity = getActivity();
+        mViewModel = ViewModelProviders.of(activity).get(CategoriesViewModel.class);
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -65,8 +67,6 @@ public class CreateCategoryDialogFragment extends DialogFragment {
                 } else {
                     mRadioGroup.setVisibility(View.GONE);
                 }
-
-//                mButton.setVisibility(View.GONE);
             }
         });
 
@@ -79,25 +79,14 @@ public class CreateCategoryDialogFragment extends DialogFragment {
                         String icon = "city";
 
                         int choiceId = mRadioGroup.getCheckedRadioButtonId();
-//                        Log.d(TAG, "onClick: choiceId = " + choiceId);
 
                         if (choiceId > 0) {
                             RadioButton choiceRadioButton = view.findViewById(choiceId);
-//                            Log.d(TAG, "onClick: getTag = " + choiceRadioButton.getTag());
                             icon = choiceRadioButton.getTag().toString();
                         }
 
                         if (!name.isEmpty()) {
-                            CategoryEntity categoryEntity = new CategoryEntity();
-                            categoryEntity.name = name;
-                            categoryEntity.imageName = icon;
-
-                            MyNotesDao dao = MyNotesApp.getDatabase().myNotesDao();
-                            dao.createCategory(categoryEntity);
-
-                            if (activity instanceof CategoriesActivity) {
-                                ((CategoriesActivity) activity).refresh();
-                            }
+                            mViewModel.createCategory(name, icon);
                         } else {
                             Toast.makeText(activity, "Enter correct a category name!", Toast.LENGTH_SHORT).show();
                         }

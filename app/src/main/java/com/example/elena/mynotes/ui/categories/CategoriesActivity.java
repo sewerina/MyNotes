@@ -1,18 +1,15 @@
-package com.example.elena.mynotes.ui;
+package com.example.elena.mynotes.ui.categories;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.example.elena.mynotes.MyNotesApp;
 import com.example.elena.mynotes.R;
-import com.example.elena.mynotes.database.MyNotesDao;
 import com.example.elena.mynotes.database.entities.CategoryEntity;
-import com.example.elena.mynotes.model.Category;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -21,6 +18,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriesActivity extends AppCompatActivity {
@@ -33,8 +31,8 @@ public class CategoriesActivity extends AppCompatActivity {
     @BindView(R.id.fab_add_category)
     FloatingActionButton mFab;
 
-    private MyNotesDao mMyNotesDao;
     private CategoryAdapter mAdapter;
+    private CategoriesViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +41,15 @@ public class CategoriesActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        mMyNotesDao = MyNotesApp.getDatabase().myNotesDao();
+        mViewModel = ViewModelProviders.of(this).get(CategoriesViewModel.class);
+        mViewModel.categories.observe(this, new Observer<List<CategoryEntity>>() {
+            @Override
+            public void onChanged(List<CategoryEntity> categoryEntities) {
+                mAdapter.update(categoryEntities);
+            }
+        });
 
-//        for (int i = 1; i <= 10; i++) {
-//            CategoryEntity entity = new CategoryEntity();
-//            entity.id = i;
-//            entity.name = String.valueOf(i);
-//            mMyNotesDao.createCategory(entity);
-//        }
-
-        List<CategoryEntity> categories = mMyNotesDao.getAllCategories();
-        mAdapter = new CategoryAdapter(categories);
-
+        mAdapter = new CategoryAdapter();
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mRecyclerView.setAdapter(mAdapter);
 
@@ -71,14 +66,10 @@ public class CategoriesActivity extends AppCompatActivity {
         });
     }
 
-    public void refresh(){
-        mAdapter.update(mMyNotesDao.getAllCategories());
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        refresh();
+        mViewModel.loadCategories();
     }
 
     @Override
@@ -124,10 +115,9 @@ public class CategoriesActivity extends AppCompatActivity {
     }
 
     private class CategoryAdapter extends RecyclerView.Adapter<CategoryHolder> {
-        private List<CategoryEntity> mCategories;
+        private final List<CategoryEntity> mCategories = new ArrayList<>();
 
-        public CategoryAdapter(List<CategoryEntity> categories) {
-            mCategories = categories;
+        public CategoryAdapter() {
         }
 
         @NonNull

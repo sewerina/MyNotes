@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.elena.mynotes.database.MyNotesDatabase;
 import com.example.elena.mynotes.database.entities.CategoryEntity;
-import com.example.elena.mynotes.ui.CategoryActivity;
+import com.example.elena.mynotes.ui.notes.CategoryActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.junit.Before;
@@ -38,7 +38,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
@@ -73,7 +72,6 @@ public class EspressoTestForCategoryActivity {
         db.myNotesDao().createCategory(categoryEntity);
 
         Intent intent = new Intent()
-                .putExtra(CategoryActivity.EXTRA_CATEGORY_NAME, categoryEntity.name)
                 .putExtra(CategoryActivity.EXTRA_CATEGORY_ID, categoryEntity.id);
         mCategoryActivityTestRule.launchActivity(intent);
     }

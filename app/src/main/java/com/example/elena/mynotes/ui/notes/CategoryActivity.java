@@ -1,8 +1,10 @@
-package com.example.elena.mynotes.ui;
+package com.example.elena.mynotes.ui.notes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -14,16 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.example.elena.mynotes.MyNotesApp;
 import com.example.elena.mynotes.R;
-import com.example.elena.mynotes.database.MyNotesDao;
-import com.example.elena.mynotes.database.entities.CategoryEntity;
 import com.example.elena.mynotes.database.entities.NoteEntity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryActivity extends AppCompatActivity {
-    public static final String EXTRA_CATEGORY_NAME = "com.example.elena.mynotes.ui.categoryName";
     public static final String EXTRA_CATEGORY_ID = "com.example.elena.mynotes.ui.categoryId";
 
     @BindView(R.id.recyclerView_notes)
@@ -33,16 +32,16 @@ public class CategoryActivity extends AppCompatActivity {
     FloatingActionButton mFab;
 
     private NoteAdapter mAdapter;
-    private MyNotesDao mMyNotesDao;
-    private int mCategoryId;
+
     private ActionBar mActionBar;
 
-    private boolean mIsSort = false;
+    private int mCategoryId;
 
-    public static Intent newIntent(Context context, String name, int id) {
+    private NotesViewModel mViewModel;
+
+    public static Intent newIntent(Context context, int categoryId) {
         Intent intent = new Intent(context, CategoryActivity.class);
-        intent.putExtra(EXTRA_CATEGORY_NAME, name);
-        intent.putExtra(EXTRA_CATEGORY_ID, id);
+        intent.putExtra(EXTRA_CATEGORY_ID, categoryId);
         return intent;
     }
 
@@ -53,58 +52,43 @@ public class CategoryActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        mViewModel = ViewModelProviders.of(this).get(NotesViewModel.class);
+        mViewModel.notes.observe(this, new Observer<List<NoteEntity>>() {
+            @Override
+            public void onChanged(List<NoteEntity> noteEntities) {
+                mAdapter.update(noteEntities);
+            }
+        });
+        mViewModel.imageName.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String imageName) {
+                int id = getResources().getIdentifier(imageName, "drawable", getPackageName());
+                mActionBar.setIcon(id);
+            }
+        });
+        mViewModel.categoryName.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String categoryName) {
+                setTitle(categoryName);
+            }
+        });
+
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayShowHomeEnabled(true);
 
-        String name = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
-        setTitle(name);
-
         mCategoryId = getIntent().getIntExtra(EXTRA_CATEGORY_ID, -1);
+        mViewModel.load(mCategoryId);
 
-        mMyNotesDao = MyNotesApp.getDatabase().myNotesDao();
-
-        List<CategoryEntity> list = mMyNotesDao.categoryById(mCategoryId);
-        if (!list.isEmpty()) {
-            CategoryEntity categoryEntity = list.get(0);
-            String imageName = categoryEntity.imageName;
-            int id = getResources().getIdentifier(imageName, "drawable", getPackageName());
-            mActionBar.setIcon(id);
-
-        }
-
-//        for(int k = 1; k <= 5; k++) {
-//            NoteEntity noteEntity = new NoteEntity();
-//            noteEntity.categoryId = mCategoryId;
-//            noteEntity.id = 11 * k + mCategoryId;
-//            noteEntity.description = "Something";
-//            mMyNotesDao.createNote(noteEntity);
-//        }
-
-        List<NoteEntity> noteEntities = mMyNotesDao.getNotesByCategoryId(mCategoryId);
-        mAdapter = new NoteAdapter(noteEntities);
-
+        mAdapter = new NoteAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateNoteDialogFragment.showDialog(getSupportFragmentManager(), mCategoryId);
+                CreateNoteDialogFragment.showDialog(getSupportFragmentManager());
             }
         });
-    }
-
-    public void refreshAdapter() {
-        List<NoteEntity> notes = mIsSort ? mMyNotesDao.getSortedNotesByCategoryId(mCategoryId) : mMyNotesDao.getNotesByCategoryId(mCategoryId);
-        mAdapter.update(notes);
-    }
-
-    public void refreshToolbar() {
-        CategoryEntity categoryEntity = mMyNotesDao.categoryById(mCategoryId).get(0);
-        setTitle(categoryEntity.name);
-        String imageName = categoryEntity.imageName;
-        int id = getResources().getIdentifier(imageName, "drawable", getPackageName());
-        mActionBar.setIcon(id);
     }
 
     @Override
@@ -117,25 +101,21 @@ public class CategoryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_category:
-                UpdateCategoryDialogFragment.showDialog(getSupportFragmentManager(), mCategoryId);
+                UpdateCategoryDialogFragment.showDialog(getSupportFragmentManager());
                 return true;
 
             case R.id.sort_notes:
-                mIsSort = !mIsSort;
-                if (mIsSort) {
+                if (mViewModel.switchNotesOrder()) {
                     item.setIcon(R.drawable.ic_sort);
                     item.setTitle(R.string.sort);
                 } else {
                     item.setIcon(R.drawable.ic_unsorted);
                     item.setTitle(R.string.unsorted);
                 }
-                refreshAdapter();
                 return true;
 
             case R.id.delete_category:
-                mMyNotesDao.deleteNotesByCategoryId(mCategoryId);
-                refreshAdapter();
-                mMyNotesDao.deleteCategory(mCategoryId);
+                mViewModel.deleteCategory();
                 this.finish();
                 return true;
 
@@ -164,10 +144,9 @@ public class CategoryActivity extends AppCompatActivity {
     }
 
     private class NoteAdapter extends RecyclerView.Adapter<NoteHolder> {
-        private List<NoteEntity> mNotes;
+        private List<NoteEntity> mNotes = new ArrayList<>();
 
-        public NoteAdapter(List<NoteEntity> notes) {
-            mNotes = notes;
+        public NoteAdapter() {
         }
 
         @NonNull

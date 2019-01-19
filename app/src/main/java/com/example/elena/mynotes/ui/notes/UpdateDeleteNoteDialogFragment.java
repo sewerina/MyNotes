@@ -1,4 +1,4 @@
-package com.example.elena.mynotes.ui;
+package com.example.elena.mynotes.ui.notes;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -6,28 +6,25 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import com.example.elena.mynotes.MyNotesApp;
 import com.example.elena.mynotes.R;
-import com.example.elena.mynotes.database.MyNotesDao;
-import com.example.elena.mynotes.database.entities.NoteEntity;
-import java.util.Date;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UpdateDeleteNoteDialogFragment extends DialogFragment {
     private static final String TAG = "UpdateNoteDialog";
-    private static final String NOTE_ID = "com.example.elena.mynotes.ui.UpdateDeleteNoteDialogFragment.noteId";
+    private static final String NOTE_ID = "com.example.elena.mynotes.ui.notes.UpdateDeleteNoteDialogFragment.noteId";
 
     @BindView(R.id.et_note)
     EditText mEditText;
 
-    private MyNotesDao mDao;
+    private NotesViewModel mViewModel;
 
     private int mNoteId;
 
@@ -47,6 +44,7 @@ public class UpdateDeleteNoteDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         FragmentActivity activity = getActivity();
+        mViewModel = ViewModelProviders.of(activity).get(NotesViewModel.class);
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -57,9 +55,7 @@ public class UpdateDeleteNoteDialogFragment extends DialogFragment {
             mNoteId = getArguments().getInt(NOTE_ID);
         }
 
-        mDao = MyNotesApp.getDatabase().myNotesDao();
-        NoteEntity noteEntity = mDao.noteById(mNoteId).get(0);
-        String lastNoteDescription = noteEntity.description;
+        String lastNoteDescription = mViewModel.noteDescription(mNoteId);
         mEditText.setText(lastNoteDescription);
 
         dialogBuilder.setTitle(getString(R.string.dialog_title_updateDeleteNote))
@@ -67,26 +63,14 @@ public class UpdateDeleteNoteDialogFragment extends DialogFragment {
                 .setNegativeButton(getString(R.string.btn_delete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mDao.deleteNote(mNoteId);
-
-                        if (activity instanceof CategoryActivity) {
-                            ((CategoryActivity) activity).refreshAdapter();
-                        }
+                        mViewModel.deleteNote();
                     }
                 })
                 .setPositiveButton(getString(R.string.btn_update), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newNoteDescription = mEditText.getText().toString();
-                        if (!newNoteDescription.equals(lastNoteDescription)) {
-                            noteEntity.description = newNoteDescription;
-                            noteEntity.modifiedDate = new Date();
-                            mDao.updateNote(noteEntity);
-
-                            if (activity instanceof CategoryActivity) {
-                                ((CategoryActivity) activity).refreshAdapter();
-                            }
-                        }
+                        mViewModel.updateNote(newNoteDescription);
                     }
                 });
 

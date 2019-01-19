@@ -1,8 +1,7 @@
-package com.example.elena.mynotes.ui;
+package com.example.elena.mynotes.ui.categories;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.elena.mynotes.R;
 import com.example.elena.mynotes.database.entities.CategoryEntity;
-import com.example.elena.mynotes.model.Category;
+import com.example.elena.mynotes.ui.notes.CategoryActivity;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -54,7 +54,7 @@ public class CategoryPresentation {
     public Intent navigateToCategoryActivity() {
         Intent intent = null;
         if (mCategory != null) {
-            intent = CategoryActivity.newIntent(mViewGroup.getContext(), mCategory.name, mCategory.id);
+            intent = CategoryActivity.newIntent(mViewGroup.getContext(), mCategory.id);
         }
         // TODO: do not return null
         return intent;
