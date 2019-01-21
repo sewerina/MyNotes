@@ -16,6 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.example.elena.mynotes.R;
 import com.example.elena.mynotes.database.entities.NoteEntity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,6 +29,9 @@ public class CategoryActivity extends AppCompatActivity {
 
     @BindView(R.id.recyclerView_notes)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.tv_emptyNoteList)
+    TextView mEmptyListTV;
 
     @BindView(R.id.fab_add_note)
     FloatingActionButton mFab;
@@ -56,6 +61,13 @@ public class CategoryActivity extends AppCompatActivity {
         mViewModel.notes.observe(this, new Observer<List<NoteEntity>>() {
             @Override
             public void onChanged(List<NoteEntity> noteEntities) {
+                if (noteEntities.isEmpty()) {
+                    mEmptyListTV.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
+                } else {
+                    mEmptyListTV.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                }
                 mAdapter.update(noteEntities);
             }
         });

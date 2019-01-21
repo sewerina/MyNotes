@@ -16,5 +16,8 @@
     <string name="btn_ok">OK</string>
     <string name="btn_update">Update</string>
     <string name="btn_delete">Delete</string>
+    <string name="tv_emptyCategoryList">There is no category to form your notes.
+        To create a category, click on the Plus!</string>
+    <string name="tv_emptyNoteList">You don\'t have any notes. To create a note, click on the Plus!</string>
 
 </resources>

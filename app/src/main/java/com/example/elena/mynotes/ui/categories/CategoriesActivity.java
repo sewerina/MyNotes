@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,9 @@ public class CategoriesActivity extends AppCompatActivity {
 
     @BindView(R.id.fab_add_category)
     FloatingActionButton mFab;
+
+    @BindView(R.id.tv_emptyCategoryList)
+    TextView mEmptyListTV;
 
     private CategoryAdapter mAdapter;
     private CategoriesViewModel mViewModel;
@@ -45,6 +50,13 @@ public class CategoriesActivity extends AppCompatActivity {
         mViewModel.categories.observe(this, new Observer<List<CategoryEntity>>() {
             @Override
             public void onChanged(List<CategoryEntity> categoryEntities) {
+                if (categoryEntities.isEmpty()) {
+                    mEmptyListTV.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
+                } else {
+                    mEmptyListTV.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                }
                 mAdapter.update(categoryEntities);
             }
         });
