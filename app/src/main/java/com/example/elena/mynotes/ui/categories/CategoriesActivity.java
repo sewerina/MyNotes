@@ -62,7 +62,7 @@ public class CategoriesActivity extends AppCompatActivity {
         });
 
         mAdapter = new CategoryAdapter();
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, RecyclerView.VERTICAL, false));
         mRecyclerView.setAdapter(mAdapter);
 
         setSupportActionBar(mToolbar);
